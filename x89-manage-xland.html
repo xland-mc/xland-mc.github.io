@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت | XLAND</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== LOGIN VIEW ===================== -->
+<div id="login-view" class="admin-shell">
+  <div class="login-card">
+    <h1>ورود به پنل مدیریت</h1>
+    <p class="sub">XLAND · دسترسی محدود به مدیران سرور</p>
+
+    <div id="login-error" class="form-error"></div>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="login-email">ایمیل ادمین</label>
+        <input type="email" id="login-email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="login-password">رمز عبور</label>
+        <input type="password" id="login-password" autocomplete="current-password" required>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="not-robot" required>
+        <label for="not-robot">من ربات نیستم</label>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">ورود</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== PANEL VIEW ===================== -->
+<div id="panel-view" class="container" style="display:none;">
+  <div class="admin-topbar">
+    <div>
+      <h1>پنل مدیریت XLAND</h1>
+      <p style="color:var(--text-faint); font-size:12.5px; margin:4px 0 0;">
+        وارد شده به عنوان: <span id="admin-email-label" class="mono" style="direction:ltr; display:inline-block;">—</span>
+      </p>
+    </div>
+    <button id="logout-btn" class="btn btn-outline">خروج</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="products">محصولات فروشگاه</button>
+    <button class="tab-btn" data-tab="server">سرور و شبکه‌های اجتماعی</button>
+    <button class="tab-btn" data-tab="content">محتوای متنی سایت</button>
+    <button class="tab-btn" data-tab="security">امنیت پنل</button>
+  </div>
+
+  <!-- Products tab -->
+  <div class="tab-panel active" id="tab-products">
+    <div class="admin-card">
+      <h3 id="product-form-title">افزودن محصول جدید</h3>
+      <form id="product-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="p-name">نام محصول</label>
+            <input type="text" id="p-name" required>
+          </div>
+          <div class="field">
+            <label for="p-price">قیمت (تومان)</label>
+            <input type="text" id="p-price" inputmode="numeric" required>
+          </div>
+          <div class="field full">
+            <label for="p-desc">توضیحات</label>
+            <textarea id="p-desc"></textarea>
+          </div>
+          <div class="field">
+            <label for="p-image">لینک تصویر (اختیاری)</label>
+            <input type="text" id="p-image" placeholder="https://...">
+          </div>
+          <div class="field">
+            <label for="p-buylink">لینک خرید (اختیاری)</label>
+            <input type="text" id="p-buylink" placeholder="لینک دیسکورد یا درگاه پرداخت">
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button type="submit" id="product-submit-btn" class="btn btn-primary">افزودن به فروشگاه</button>
+          <button type="button" id="product-cancel-btn" class="btn btn-outline" style="display:none;">لغو ویرایش</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h3>محصولات موجود</h3>
+      <table class="admin-table" id="product-table">
+        <thead>
+          <tr>
+            <th>نام</th>
+            <th>قیمت</th>
+            <th>توضیحات</th>
+            <th>عملیات</th>
+          </tr>
+        </thead>
+        <tbody id="product-table-body"></tbody>
+      </table>
+      <p id="no-products-msg" style="display:none; color:var(--text-faint); font-size:14px; margin-top:14px;">
+        هنوز محصولی اضافه نشده است.
+      </p>
+    </div>
+  </div>
+
+  <!-- Server & socials tab -->
+  <div class="tab-panel" id="tab-server">
+    <form id="server-form">
+      <div class="admin-card">
+        <h3>اطلاعات اتصال سرور</h3>
+        <div class="form-grid">
+          <div class="field full">
+            <label for="s-ip">آی‌پی سرور</label>
+            <input type="text" id="s-ip" class="mono" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3>لینک‌های شبکه‌های اجتماعی</h3>
+        <div class="form-grid">
+          <div class="field">
+            <label for="s-discord">دیسکورد</label>
+            <input type="text" id="s-discord" placeholder="https://discord.gg/...">
+          </div>
+          <div class="field">
+            <label for="s-telegram">تلگرام</label>
+            <input type="text" id="s-telegram" placeholder="https://t.me/...">
+          </div>
+          <div class="field">
+            <label for="s-rubika">روبیکا</label>
+            <input type="text" id="s-rubika" placeholder="https://rubika.ir/...">
+          </div>
+          <div class="field">
+            <label for="s-youtube">یوتیوب</label>
+            <input type="text" id="s-youtube" placeholder="https://youtube.com/@...">
+          </div>
+          <div class="field">
+            <label for="s-aparat">آپارات</label>
+            <input type="text" id="s-aparat" placeholder="https://aparat.com/...">
+          </div>
+        </div>
+        <p style="color:var(--text-faint); font-size:13px; margin-top:4px;">
+          هر شبکه‌ای که لینکش خالی بماند، به‌صورت خودکار از سایت اصلی و فروشگاه پنهان می‌شود.
+        </p>
+      </div>
+
+      <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+    </form>
+  </div>
+
+  <!-- Site content tab -->
+  <div class="tab-panel" id="tab-content">
+    <form id="content-form">
+      <div class="admin-card">
+        <h3>بنر اصلی</h3>
+        <div class="form-grid">
+          <div class="field full">
+            <label for="c-hero-status">وضعیت سرور (نوشته کنار نقطه چشمک‌زن)</label>
+            <input type="text" id="c-hero-status" placeholder="مثلاً: سرور در حال ساخت است">
+          </div>
+          <div class="field full">
+            <label for="c-hero-title">عنوان اصلی</label>
+            <input type="text" id="c-hero-title">
+          </div>
+          <div class="field full">
+            <label for="c-tagline">توضیح کوتاه زیر عنوان</label>
+            <textarea id="c-tagline"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3>بخش تجهیزات</h3>
+        <div class="form-grid">
+          <div class="field full">
+            <label for="c-features-title">عنوان بخش</label>
+            <input type="text" id="c-features-title">
+          </div>
+          <div class="field full">
+            <label for="c-features-desc">توضیح بخش</label>
+            <textarea id="c-features-desc"></textarea>
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-top:6px;">
+          <div class="field">
+            <label for="c-feature-1-title">عنوان تجهیز ۱</label>
+            <input type="text" id="c-feature-1-title">
+          </div>
+          <div class="field">
+            <label for="c-feature-1-desc">توضیح تجهیز ۱</label>
+            <input type="text" id="c-feature-1-desc">
+          </div>
+          <div class="field">
+            <label for="c-feature-2-title">عنوان تجهیز ۲</label>
+            <input type="text" id="c-feature-2-title">
+          </div>
+          <div class="field">
+            <label for="c-feature-2-desc">توضیح تجهیز ۲</label>
+            <input type="text" id="c-feature-2-desc">
+          </div>
+          <div class="field">
+            <label for="c-feature-3-title">عنوان تجهیز ۳</label>
+            <input type="text" id="c-feature-3-title">
+          </div>
+          <div class="field">
+            <label for="c-feature-3-desc">توضیح تجهیز ۳</label>
+            <input type="text" id="c-feature-3-desc">
+          </div>
+          <div class="field">
+            <label for="c-feature-4-title">عنوان تجهیز ۴</label>
+            <input type="text" id="c-feature-4-title">
+          </div>
+          <div class="field">
+            <label for="c-feature-4-desc">توضیح تجهیز ۴</label>
+            <input type="text" id="c-feature-4-desc">
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3>بخش مپ خاورمیانه</h3>
+        <div class="form-grid">
+          <div class="field full">
+            <label for="c-map-title">عنوان بخش مپ</label>
+            <input type="text" id="c-map-title">
+          </div>
+          <div class="field full">
+            <label for="c-map-desc-1">پاراگراف اول</label>
+            <textarea id="c-map-desc-1"></textarea>
+          </div>
+          <div class="field full">
+            <label for="c-map-desc-2">پاراگراف دوم</label>
+            <textarea id="c-map-desc-2"></textarea>
+          </div>
+          <div class="field full">
+            <label for="c-map-tags">برچسب‌ها (با ویرگول جدا کنید)</label>
+            <input type="text" id="c-map-tags" placeholder="امپراتوری‌سازی، تسخیر قلمرو، پایگاه نظامی، نبردهای زرهی و هوایی">
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3>آمار سرور (بخش شمارنده در صفحه اصلی)</h3>
+        <p style="color:var(--text-faint); font-size:13px; margin-top:-8px;">
+          این اعداد وقتی بازدیدکننده به آن بخش اسکرول می‌کند، از صفر تا مقدار واقعی شمارش می‌شوند.
+        </p>
+        <div class="form-grid">
+          <div class="field">
+            <label for="c-stat-1-label">عنوان آمار ۱</label>
+            <input type="text" id="c-stat-1-label" placeholder="مثلاً: بازیکن آنلاین">
+          </div>
+          <div class="field">
+            <label for="c-stat-1-value">مقدار آمار ۱</label>
+            <input type="text" id="c-stat-1-value" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="c-stat-2-label">عنوان آمار ۲</label>
+            <input type="text" id="c-stat-2-label">
+          </div>
+          <div class="field">
+            <label for="c-stat-2-value">مقدار آمار ۲</label>
+            <input type="text" id="c-stat-2-value" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="c-stat-3-label">عنوان آمار ۳</label>
+            <input type="text" id="c-stat-3-label">
+          </div>
+          <div class="field">
+            <label for="c-stat-3-value">مقدار آمار ۳</label>
+            <input type="text" id="c-stat-3-value" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="c-stat-4-label">عنوان آمار ۴ (٪ آپ‌تایم پیش‌فرض)</label>
+            <input type="text" id="c-stat-4-label">
+          </div>
+          <div class="field">
+            <label for="c-stat-4-value">مقدار آمار ۴</label>
+            <input type="text" id="c-stat-4-value" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">ذخیره محتوای سایت</button>
+    </form>
+  </div>
+
+  <!-- Security tab -->
+  <div class="tab-panel" id="tab-security">
+    <div class="admin-card">
+      <p style="color:var(--amber); font-size:13px; background:rgba(232,150,58,0.08); border:1px solid var(--amber-dim); border-radius:var(--radius); padding:10px 12px; margin-top:0;">
+        توجه: ورود به این پنل الان از طریق Firebase Authentication (همان ایمیل/رمزی که در Firebase Console ساختی) انجام می‌شود.
+        فرم زیر یک سیستم نام‌کاربری/رمز محلی قدیمی‌تر است که دیگر برای ورود استفاده نمی‌شود؛ برای تغییر ایمیل یا رمز واقعی ورود،
+        به Firebase Console → Authentication → Users مراجعه کن.
+      </p>
+      <h3>تغییر نام کاربری و رمز عبور (سیستم محلی قدیمی)</h3>
+      <p style="color:var(--text-faint); font-size:13px; margin-top:-8px;">
+        رمز عبور به‌صورت هش‌شده (SHA-256) ذخیره می‌شود، نه به‌صورت متن ساده.
+      </p>
+      <form id="security-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="sec-username">نام کاربری جدید</label>
+            <input type="text" id="sec-username" required>
+          </div>
+          <div class="field">
+            <label for="sec-password">رمز عبور جدید</label>
+            <input type="password" id="sec-password" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:10px;">به‌روزرسانی اطلاعات ورود</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase (Realtime Database + Authentication) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyB8gy3EmRQIAbi620YvUh-50-8v0E_HG3I",
+    authDomain: "xland-db.firebaseapp.com",
+    databaseURL: "https://xland-db-default-rtdb.firebaseio.com",
+    projectId: "xland-db",
+    storageBucket: "xland-db.firebasestorage.app",
+    messagingSenderId: "186521479297",
+    appId: "1:186521479297:web:2ed14902c3fcde77ed0580"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const auth = firebase.auth();
+</script>
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

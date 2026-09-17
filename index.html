@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XLAND | سرور ماینکرفت جنگ‌های مدرن</title>
+<meta name="description" content="XLAND؛ سرور ماینکرفت با تم جنگ‌های مدرن — امپراتوری‌سازی، تانک، جت F-16، اسلحه‌های مدرن، سیستم هک و مپ خاورمیانه.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="xland-scroll-progress" class="scroll-progress" aria-hidden="true"></div>
+<canvas id="xland-particles" class="particle-canvas" aria-hidden="true"></canvas>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo"><span class="dot"></span> XLAND</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">خانه</a>
+      <a href="shop.html">فروشگاه</a>
+      <a href="#features">امکانات</a>
+      <a href="#connect">شبکه‌های اجتماعی</a>
+    </div>
+    <div class="nav-social">
+      <a class="social-icon-btn" data-discord-link target="_blank" rel="noopener" aria-label="دیسکورد">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="9" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a class="social-icon-btn" data-telegram-link target="_blank" rel="noopener" aria-label="تلگرام">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 2 10.7l6.3 2.2L11 20l3-4.6L21 3z"/><path d="M21 3 8.3 12.9"/></svg>
+      </a>
+      <a class="social-icon-btn" data-rubika-link target="_blank" rel="noopener" aria-label="روبیکا">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/></svg>
+      </a>
+      <a class="social-icon-btn" data-youtube-link target="_blank" rel="noopener" aria-label="یوتیوب">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/><path d="M10 9.3v5.4l5-2.7-5-2.7z" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a class="social-icon-btn" data-aparat-link target="_blank" rel="noopener" aria-label="آپارات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.7v6.6l6-3.3-6-3.3z" fill="currentColor" stroke="none"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-eyebrow"><span class="pulse"></span> <span id="hero-status">سرور در حال ساخت است</span></div>
+      <h1 id="hero-title">وارد جبهه <span>xland</span> شو</h1>
+      <p class="lead" id="hero-tagline">امپراتوری خودت رو بساز، سرزمین قلمروگشایی کن و با تجهیزات مدرن ازش دفاع کن.</p>
+      <div class="hero-ctas">
+        <a href="shop.html" class="btn btn-primary">مشاهده فروشگاه</a>
+        <a href="#" class="btn btn-outline" data-discord-link target="_blank" rel="noopener">دیسکورد سرور</a>
+      </div>
+      <div class="hero-social">
+        <a class="social-icon-btn" data-discord-link target="_blank" rel="noopener" aria-label="دیسکورد">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="9" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a class="social-icon-btn" data-telegram-link target="_blank" rel="noopener" aria-label="تلگرام">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 2 10.7l6.3 2.2L11 20l3-4.6L21 3z"/><path d="M21 3 8.3 12.9"/></svg>
+        </a>
+        <a class="social-icon-btn" data-rubika-link target="_blank" rel="noopener" aria-label="روبیکا">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/></svg>
+        </a>
+        <a class="social-icon-btn" data-youtube-link target="_blank" rel="noopener" aria-label="یوتیوب">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/><path d="M10 9.3v5.4l5-2.7-5-2.7z" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a class="social-icon-btn" data-aparat-link target="_blank" rel="noopener" aria-label="آپارات">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.7v6.6l6-3.3-6-3.3z" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="ip-card tilt-card">
+      <div class="ip-card-label">آی‌پی سرور برای اتصال</div>
+      <div class="ip-row">
+        <span class="ip-value mono" id="server-ip-value">play.Xland.ir</span>
+        <button class="copy-btn" id="copy-ip-btn">کپی IP</button>
+      </div>
+      <div class="ip-meta">
+        <span class="ip-meta-item">نسخه: <b>Java 1.20.1 - 1.21.4</b></span>
+        <span class="ip-meta-item">تم: <b>جنگ‌های مدرن</b></span>
+        <span class="ip-meta-item">مپ: <b>خاورمیانه</b></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section reveal" id="stats" style="padding-top:0;">
+  <div class="container">
+    <div class="stats-grid" id="stats-grid">
+      <!-- rendered dynamically by main.js from config.stats -->
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="features">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="features-title">تجهیزات میدان نبرد</h2>
+      <p id="features-desc">هر چیزی که برای یک عملیات نظامی واقعی در ماینکرفت نیاز داری، اینجا پیاده‌سازی شده.</p>
+    </div>
+
+    <div class="feature-grid" id="feature-grid">
+      <!-- rendered dynamically by main.js from config.features -->
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container map-strip">
+    <div class="map-visual tilt-card"></div>
+    <div class="map-copy">
+      <h2 id="map-title">مپ اختصاصی خاورمیانه</h2>
+      <p id="map-desc-1"></p>
+      <p id="map-desc-2"></p>
+      <div class="map-tags" id="map-tags"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="connect" style="border-bottom:none;">
+  <div class="container">
+    <div class="section-head">
+      <h2>به واحد ما بپیوند</h2>
+      <p>برای اطلاع از رویدادها، آپدیت‌ها و ارتباط با بقیه بازیکنان، عضو کانال‌های ما شو.</p>
+    </div>
+    <div class="social-row">
+      <a href="#" class="social-card tilt-card" data-discord-link target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="9" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+        <div>
+          <div class="label">دیسکورد</div>
+          <div class="sub">اطلاعیه‌ها و پشتیبانی</div>
+        </div>
+      </a>
+      <a href="#" class="social-card tilt-card" data-telegram-link target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 2 10.7l6.3 2.2L11 20l3-4.6L21 3z"/><path d="M21 3 8.3 12.9"/></svg></span>
+        <div>
+          <div class="label">تلگرام</div>
+          <div class="sub">اخبار سرور</div>
+        </div>
+      </a>
+      <a href="#" class="social-card tilt-card" data-rubika-link target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/></svg></span>
+        <div>
+          <div class="label">روبیکا</div>
+          <div class="sub">اخبار و اطلاعیه‌های فارسی</div>
+        </div>
+      </a>
+      <a href="#" class="social-card tilt-card" data-youtube-link target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/><path d="M10 9.3v5.4l5-2.7-5-2.7z" fill="currentColor" stroke="none"/></svg></span>
+        <div>
+          <div class="label">یوتیوب</div>
+          <div class="sub">ویدیوهای گیم‌پلی</div>
+        </div>
+      </a>
+      <a href="#" class="social-card tilt-card" data-aparat-link target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.7v6.6l6-3.3-6-3.3z" fill="currentColor" stroke="none"/></svg></span>
+        <div>
+          <div class="label">آپارات</div>
+          <div class="sub">کلیپ و تیزر سرور</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer container">
+  <div class="footer-social">
+    <a data-discord-link target="_blank" rel="noopener" aria-label="دیسکورد">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="9" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a data-telegram-link target="_blank" rel="noopener" aria-label="تلگرام">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 2 10.7l6.3 2.2L11 20l3-4.6L21 3z"/><path d="M21 3 8.3 12.9"/></svg>
+    </a>
+    <a data-rubika-link target="_blank" rel="noopener" aria-label="روبیکا">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/></svg>
+    </a>
+    <a data-youtube-link target="_blank" rel="noopener" aria-label="یوتیوب">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/><path d="M10 9.3v5.4l5-2.7-5-2.7z" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a data-aparat-link target="_blank" rel="noopener" aria-label="آپارات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.7v6.6l6-3.3-6-3.3z" fill="currentColor" stroke="none"/></svg>
+    </a>
+  </div>
+  <div class="footer-text">
+    <span>© XLAND — تمام حقوق محفوظ است.</span>
+    <span><a href="shop.html">فروشگاه</a></span>
+  </div>
+</footer>
+
+<!-- Firebase (Realtime Database) — replace firebaseConfig below with
+     your own project's values from Firebase Console → Project settings -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+<script>
+  // ⚠️ Placeholder values — replace all of these with your real project's config.
+  const firebaseConfig = {
+    apiKey: "AIzaSyB8gy3EmRQIAbi620YvUh-50-8v0E_HG3I",
+    authDomain: "xland-db.firebaseapp.com",
+    databaseURL: "https://xland-db-default-rtdb.firebaseio.com",
+    projectId: "xland-db",
+    storageBucket: "xland-db.firebasestorage.app",
+    messagingSenderId: "186521479297",
+    appId: "1:186521479297:web:2ed14902c3fcde77ed0580"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+</script>
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script src="effects.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
