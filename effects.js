@@ -257,7 +257,9 @@ function xlandInitCountUp(root) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  xlandInitParticles('xland-particles');
+  // xlandInitParticles('xland-particles'); — background particle
+  // canvas removed from the design; function kept below (unused)
+  // in case it's wanted again later.
   xlandBindTilt();
   xlandInitScrollReveal();
 

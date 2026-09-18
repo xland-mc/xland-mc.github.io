@@ -30,37 +30,44 @@
   /* Phase 2 — cinematic neon / glassmorphism tokens */
   --glass-bg: rgba(23, 27, 19, 0.5);
   --glass-bg-strong: rgba(23, 27, 19, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.05);
   --glass-blur: 16px;
-  --glow-amber: 0 16px 44px -14px rgba(232, 150, 58, 0.45);
-  --glow-cyan: 0 16px 44px -14px rgba(53, 230, 200, 0.4);
+  --glow-amber: 0 16px 44px -14px rgba(232, 150, 58, 0.4);
+  --glow-cyan: 0 16px 44px -14px rgba(53, 230, 200, 0.35);
   --tilt-perspective: 900px;
+  --blue: #4f8ef7;
 }
 
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; overflow-x: hidden; }
 
+/* Ambient gaming background: deep charcoal/navy mesh gradients with
+   soft amber glow pockets + a vignette darkening the edges so the
+   center content and cards stand out. No grid lines, no particles —
+   just quiet depth. All layers are fixed so they read as one static
+   atmosphere behind the page rather than scrolling with it. */
 body {
   margin: 0;
-  background: var(--bg-0);
+  background: #08090b;
   color: var(--text);
   font-family: var(--font-body);
   direction: rtl;
   line-height: 1.7;
   overflow-x: hidden;
   background-image:
-    radial-gradient(ellipse 900px 640px at 12% -8%, rgba(232,150,58,0.12), transparent 60%),
-    radial-gradient(ellipse 820px 620px at 105% 15%, rgba(53,230,200,0.10), transparent 58%),
-    radial-gradient(ellipse 700px 500px at 50% 110%, rgba(232,150,58,0.06), transparent 55%),
-    linear-gradient(rgba(201,168,118,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201,168,118,0.03) 1px, transparent 1px);
-  background-size: auto, auto, auto, 42px 42px, 42px 42px;
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
-  background-attachment: fixed, fixed, fixed, scroll, scroll;
+    radial-gradient(ellipse 55% 45% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%),
+    radial-gradient(ellipse 900px 640px at 10% -8%, rgba(232,150,58,0.10), transparent 60%),
+    radial-gradient(ellipse 820px 620px at 105% 18%, rgba(232,150,58,0.05), transparent 58%),
+    radial-gradient(ellipse 700px 550px at 55% 105%, rgba(53,230,200,0.045), transparent 60%),
+    linear-gradient(165deg, #0b0d11 0%, #0d1015 45%, #08090c 100%);
+  background-size: 100% 100%, auto, auto, auto, auto;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* Full-viewport interactive particle field — sits behind everything */
+/* Full-viewport interactive particle field — kept for anyone who
+   re-enables it later, but no longer added to any page markup. */
 .particle-canvas {
   position: fixed;
   inset: 0;
@@ -536,6 +543,33 @@ img { max-width: 100%; }
   border-radius: 999px;
 }
 
+/* Server story card */
+.story-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 40px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.story-heading {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--blue);
+  text-shadow: 0 0 18px rgba(79, 142, 247, 0.35);
+  margin-bottom: 18px;
+}
+.story-card p {
+  color: var(--text-dim);
+  font-size: 15.5px;
+  line-height: 1.95;
+  margin: 0 0 16px;
+}
+.story-card p:last-child { margin-bottom: 0; }
+
 /* Social connect cards — glassmorphic 3D-tilt */
 .social-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .social-card {
@@ -806,6 +840,9 @@ img { max-width: 100%; }
 @media (max-width: 640px) {
   .container { padding: 0 16px; }
   .nav-logo { font-size: 20px; }
+  .story-card { padding: 24px 20px; }
+  .story-heading { font-size: 18px; }
+  .story-card p { font-size: 14.5px; }
   .hero { padding: 36px 0 32px; }
   .hero h1 { font-size: 32px; }
   .hero p.lead { font-size: 16px; }
