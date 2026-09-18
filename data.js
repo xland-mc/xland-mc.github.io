@@ -2,18 +2,26 @@
    XLAND — data.js
    Firebase Realtime Database + LocalStorage fallback layer.
 
-   NOTE (Claude): this file is the user-supplied version, with
-   two small additive changes only:
+   NOTE (Claude): originally the user-supplied version, with these
+   additive/bugfix changes since:
      1. A `stats` array added to XLAND_DEFAULTS.config, needed by
         the Phase 3 count-up stats section (same pattern as the
         existing `features` array).
-     2. Each Firebase `.on('value', ...)` listener now also
-        dispatches a `window` CustomEvent ('xland:config-updated'
-        / 'xland:products-updated') after refreshing localStorage,
-        so a page that's already open can re-render live instead
-        of only picking up new data on the next full reload.
-   Nothing else was changed — all method names/signatures are
-   exactly as supplied.
+     2. Each Firebase `.on('value', ...)` listener also dispatches a
+        `window` CustomEvent ('xland:config-updated' /
+        'xland:products-updated') after refreshing localStorage, so
+        a page that's already open can re-render live instead of
+        only picking up new data on the next full reload.
+     3. CRITICAL FIX: init()'s bootstrap/merge step used to call
+        _write(), which also pushes to Firebase — so simply loading
+        any page (with empty/stale localStorage) would silently
+        overwrite the shared Firebase data with local defaults,
+        making admin changes appear to "reset" on refresh. Bootstrap
+        now uses a new _writeLocal() that only touches localStorage;
+        only explicit admin-panel saves (saveConfig/saveProducts/
+        addProduct/etc., which still call _write()) ever write to
+        Firebase.
+   All existing method names/signatures are unchanged.
    ============================================================ */
 
 const XLAND_KEYS = {
@@ -110,9 +118,12 @@ const XlandStore = {
     }
   },
   _write(key, value) {
+    // Used for explicit, user-driven mutations (admin panel saves via
+    // saveConfig/saveProducts/addProduct/etc.). Writes to the local
+    // cache AND pushes to Firebase — this is the only path that should
+    // ever modify the shared database.
     try {
       localStorage.setItem(key, JSON.stringify(value));
-      // همگام‌سازی مستقیم با دیتابیس فایربیس
       if (typeof database !== 'undefined') {
         if (key === XLAND_KEYS.CONFIG) database.ref('config').set(value);
         if (key === XLAND_KEYS.PRODUCTS) database.ref('products').set(value);
@@ -123,10 +134,24 @@ const XlandStore = {
       return false;
     }
   },
+  _writeLocal(key, value) {
+    // Local-cache-only write, with NO Firebase sync. Used only during
+    // init()'s own bootstrap/merge step below, so that simply loading
+    // a page (with possibly-empty or stale localStorage) can never
+    // overwrite the shared Firebase data with local defaults. Firebase
+    // stays untouched until an admin explicitly saves something.
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (e) {
+      console.error('XlandStore local write error', key, e);
+      return false;
+    }
+  },
 
   init() {
     if (localStorage.getItem(XLAND_KEYS.CONFIG) === null) {
-      this._write(XLAND_KEYS.CONFIG, XLAND_DEFAULTS.config);
+      this._writeLocal(XLAND_KEYS.CONFIG, XLAND_DEFAULTS.config);
     } else {
       const current = this._read(XLAND_KEYS.CONFIG, {});
       const merged = {
@@ -134,16 +159,19 @@ const XlandStore = {
         ...current,
         socials: { ...XLAND_DEFAULTS.config.socials, ...(current.socials || {}) }
       };
-      this._write(XLAND_KEYS.CONFIG, merged);
+      this._writeLocal(XLAND_KEYS.CONFIG, merged);
     }
     if (localStorage.getItem(XLAND_KEYS.PRODUCTS) === null) {
-      this._write(XLAND_KEYS.PRODUCTS, XLAND_DEFAULTS.products);
+      this._writeLocal(XLAND_KEYS.PRODUCTS, XLAND_DEFAULTS.products);
     }
     if (localStorage.getItem(XLAND_KEYS.ADMIN) === null) {
-      this._write(XLAND_KEYS.ADMIN, XLAND_DEFAULTS.admin);
+      this._writeLocal(XLAND_KEYS.ADMIN, XLAND_DEFAULTS.admin);
     }
 
-    // لود آنلاین داده‌ها از دیتابیس در صورت موجود بودن
+    // لود آنلاین داده‌ها از دیتابیس در صورت موجود بودن. توجه: اگر
+    // دیتابیس هنوز خالی باشد (val === null)، عمداً چیزی به فایربیس
+    // نمی‌نویسیم — فقط یک ذخیره‌ی واقعی از پنل مدیریت باید دیتابیس را
+    // پر کند، نه صرفِ باز شدن صفحه.
     if (typeof database !== 'undefined') {
       database.ref('config').on('value', (snapshot) => {
         const val = snapshot.val();

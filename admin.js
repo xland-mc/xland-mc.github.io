@@ -173,7 +173,7 @@ function xlandInitProductForm() {
     const price = document.getElementById('p-price').value.trim().replace(/[^\d]/g, '');
     const description = document.getElementById('p-desc').value.trim();
     const image = document.getElementById('p-image').value.trim();
-    const buyLink = document.getElementById('p-buylink').value.trim();
+    const buyLink = xlandSanitizeUrl(document.getElementById('p-buylink').value.trim());
 
     if (!name || !price) {
       xlandToast('نام و قیمت محصول الزامی است.');
@@ -212,7 +212,7 @@ function xlandInitServerForm() {
     const socials = {};
     XLAND_SOCIAL_KEYS.forEach(key => {
       const input = document.getElementById('s-' + key);
-      if (input) socials[key] = input.value.trim();
+      if (input) socials[key] = xlandSanitizeUrl(input.value.trim());
     });
     XlandStore.saveConfig({ serverIp: document.getElementById('s-ip').value.trim() });
     XlandStore.saveSocials(socials);

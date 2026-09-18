@@ -42,14 +42,33 @@ function xlandFormatToman(amount) {
   return num.toLocaleString('fa-IR') + ' تومان';
 }
 
+/* URL sanitizer — if an admin pastes a link without http(s):// (e.g.
+   just "rubika.ir/xland"), the browser would otherwise treat it as a
+   path relative to the CURRENT page (so on GitHub Pages it resolves
+   to something like "username.github.io/rubika.ir/xland" instead of
+   actually leaving the site). This prepends "https://" whenever the
+   value doesn't already start with a real URI scheme (http, https,
+   mailto, tel, etc.), so every social/product link always points
+   where it's supposed to. */
+function xlandSanitizeUrl(url) {
+  if (!url) return url;
+  const trimmed = String(url).trim();
+  if (!trimmed) return trimmed;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed; // already has a scheme (http:, https:, mailto:, tel:, //...)
+  if (trimmed.startsWith('//')) return 'https:' + trimmed;   // protocol-relative
+  return 'https://' + trimmed;
+}
+
 /* Applies config.socials to every element in the page carrying
    data-<key>-link (nav icons, footer icons, connect-section cards).
    Elements with no URL configured are hidden rather than left as
-   dead links. */
+   dead links. Links are run through xlandSanitizeUrl() first so a
+   link saved without http(s):// never resolves relative to the
+   current page. */
 function xlandApplySocialLinks(config) {
   const socials = config.socials || {};
   XLAND_SOCIAL_KEYS.forEach(key => {
-    const url = socials[key];
+    const url = xlandSanitizeUrl(socials[key]);
     document.querySelectorAll('[data-' + key + '-link]').forEach(el => {
       if (url) {
         el.href = url;

@@ -47,7 +47,7 @@ function xlandRenderShop() {
 
     const buyBtn = card.querySelector('.buy-btn');
     if (p.buyLink) {
-      buyBtn.href = p.buyLink;
+      buyBtn.href = xlandSanitizeUrl(p.buyLink);
       buyBtn.target = '_blank';
       buyBtn.rel = 'noopener';
     } else {

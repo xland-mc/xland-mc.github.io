@@ -202,12 +202,23 @@ function xlandInitScrollProgress(barId) {
 
 /* ---------- 6. Count-up stat numbers ---------- */
 function xlandAnimateCount(el) {
-  const target = parseFloat(el.dataset.target || '0');
+  const targetStr = el.dataset.target || '0';
+  const target = parseFloat(targetStr);
+  // Preserve as many decimal places as the configured value actually
+  // has (e.g. "99.9" -> 1 decimal), instead of always rounding to a
+  // whole number and losing values like 99.9%.
+  const decimalMatch = targetStr.match(/\.(\d+)/);
+  const decimals = decimalMatch ? decimalMatch[1].length : 0;
   const suffix = el.dataset.suffix || '';
   const duration = 1400;
 
+  const format = (num) => num.toLocaleString('fa-IR', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  }) + suffix;
+
   if (XLAND_REDUCE_MOTION) {
-    el.textContent = target.toLocaleString('fa-IR') + suffix;
+    el.textContent = format(target);
     return;
   }
 
@@ -216,8 +227,8 @@ function xlandAnimateCount(el) {
     const elapsed = now - start;
     const t = Math.min(1, elapsed / duration);
     const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-    const value = Math.round(target * eased);
-    el.textContent = value.toLocaleString('fa-IR') + suffix;
+    const value = target * eased;
+    el.textContent = format(value);
     if (t < 1) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
