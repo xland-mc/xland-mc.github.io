@@ -364,16 +364,18 @@ img { max-width: 100%; }
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
-  border-radius: 10px;
-  padding: 22px;
+  border-radius: 16px;
+  padding: 34px;
   position: relative;
   box-shadow: var(--glow-amber), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 .ip-card:hover { box-shadow: var(--glow-cyan), inset 0 1px 0 rgba(255,255,255,0.06); }
+.ip-card-clickable { cursor: pointer; transition: transform 0.18s ease-out, box-shadow 0.25s ease, border-color 0.25s ease; }
+.ip-card-clickable:active { transform: scale(0.985); }
 .ip-card::before {
   content: '';
   position: absolute; inset: 0;
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 1px;
   background: linear-gradient(135deg, rgba(232,150,58,0.35), rgba(53,230,200,0.25) 60%, transparent 90%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -400,12 +402,13 @@ img { max-width: 100%; }
 .ip-value {
   font-family: 'Consolas', 'Courier New', monospace;
   direction: ltr;
-  font-size: 20px;
+  font-size: 26px;
+  font-weight: 700;
   color: var(--amber);
   flex: 1;
   overflow-wrap: anywhere;
   min-width: 0;
-  text-shadow: 0 0 16px rgba(232,150,58,0.5);
+  text-shadow: 0 0 18px rgba(232,150,58,0.55);
 }
 .copy-btn {
   background: var(--bg-2);
@@ -851,7 +854,7 @@ img { max-width: 100%; }
 
   .ip-card { padding: 16px; }
   .ip-row { flex-direction: column; align-items: stretch; gap: 10px; }
-  .ip-value { font-size: 17px; text-align: center; }
+  .ip-value { font-size: 20px; text-align: center; }
   .copy-btn { width: 100%; text-align: center; }
   .ip-meta { gap: 10px 16px; justify-content: center; text-align: center; }
   .hero-social { justify-content: center; }
@@ -880,7 +883,7 @@ img { max-width: 100%; }
 
 @media (max-width: 380px) {
   .hero h1 { font-size: 27px; }
-  .ip-value { font-size: 15px; }
+  .ip-value { font-size: 17px; }
   .nav-social { gap: 4px; }
   .social-icon-btn { width: 28px; height: 28px; }
   .social-icon-btn svg { width: 14px; height: 14px; }
