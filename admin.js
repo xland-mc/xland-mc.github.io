@@ -24,6 +24,7 @@ function xlandShowPanel(user) {
   xlandLoadContentForm();
   xlandLoadSecurityForm();
   xlandRenderProductTable();
+  xlandInitTicketsListener();
 }
 
 function xlandShowLogin() {
@@ -317,6 +318,82 @@ function xlandInitSecurityForm() {
     await XlandStore.saveAdmin({ username, password });
     document.getElementById('sec-password').value = '';
     xlandToast('اطلاعات ورود به‌روزرسانی شد (رمز به‌صورت هش‌شده ذخیره شد).');
+  });
+}
+
+/* ---------- Tickets (from the public site's ticket form) ---------- */
+let xlandTicketsBound = false;
+
+function xlandFormatTicketTime(ms) {
+  if (!ms) return '';
+  try {
+    return new Date(ms).toLocaleString('fa-IR');
+  } catch (e) {
+    return '';
+  }
+}
+
+function xlandRenderTickets(ticketsObj) {
+  const tbody = document.getElementById('ticket-table-body');
+  const emptyMsg = document.getElementById('no-tickets-msg');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const entries = Object.entries(ticketsObj || {}).sort((a, b) => (b[1].time || 0) - (a[1].time || 0));
+
+  if (entries.length === 0) {
+    emptyMsg.style.display = 'block';
+    return;
+  }
+  emptyMsg.style.display = 'none';
+
+  entries.forEach(([key, t]) => {
+    const tr = document.createElement('tr');
+
+    const nameTd = document.createElement('td');
+    nameTd.textContent = t.name || '—';
+
+    const contactTd = document.createElement('td');
+    contactTd.style.fontSize = '13px';
+    contactTd.style.color = 'var(--text-dim)';
+    contactTd.textContent = [t.email, t.phone].filter(Boolean).join(' · ') || '—';
+
+    const msgTd = document.createElement('td');
+    msgTd.textContent = t.message || '';
+    msgTd.style.maxWidth = '320px';
+    msgTd.style.color = 'var(--text-dim)';
+
+    const timeTd = document.createElement('td');
+    timeTd.style.fontSize = '12.5px';
+    timeTd.style.color = 'var(--text-faint)';
+    timeTd.textContent = xlandFormatTicketTime(t.time);
+
+    const actionsTd = document.createElement('td');
+    const delBtn = document.createElement('button');
+    delBtn.className = 'icon-btn danger';
+    delBtn.textContent = 'حذف';
+    delBtn.addEventListener('click', () => {
+      if (confirm('این تیکت حذف شود؟')) {
+        database.ref('tickets/' + key).remove();
+        xlandToast('تیکت حذف شد.');
+      }
+    });
+    actionsTd.appendChild(delBtn);
+
+    tr.appendChild(nameTd);
+    tr.appendChild(contactTd);
+    tr.appendChild(msgTd);
+    tr.appendChild(timeTd);
+    tr.appendChild(actionsTd);
+    tbody.appendChild(tr);
+  });
+}
+
+function xlandInitTicketsListener() {
+  if (xlandTicketsBound || typeof database === 'undefined') return;
+  xlandTicketsBound = true;
+  database.ref('tickets').on('value', (snapshot) => {
+    xlandRenderTickets(snapshot.val());
   });
 }
 

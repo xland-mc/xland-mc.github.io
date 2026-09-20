@@ -19,6 +19,7 @@
       <a href="shop.html">فروشگاه</a>
       <a href="#features">امکانات</a>
       <a href="#faq">سوالات متداول</a>
+      <a href="#ticket">تیکت</a>
       <a href="#connect">شبکه‌های اجتماعی</a>
     </div>
     <div class="nav-social">
@@ -70,8 +71,8 @@
       </div>
     </div>
 
-    <div class="ip-card tilt-card ip-card-clickable" id="ip-click-target" title="برای کپی کردن آی‌پی کلیک کن">
-      <div class="ip-card-label">آی‌پی سرور برای اتصال · روی کادر کلیک کن</div>
+    <div class="ip-card tilt-card">
+      <div class="ip-card-label">آی‌پی سرور برای اتصال</div>
       <div class="ip-row">
         <span class="ip-value mono" id="server-ip-value">play.Xland.ir</span>
         <button class="copy-btn" id="copy-ip-btn">کپی IP</button>
@@ -185,10 +186,42 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer"><div class="faq-answer-inner">
-          <p>سریع‌ترین راه، دیسکورد سرور است (لینکش بالای همین صفحه و توی فوتره). اونجا می‌تونی تیکت بزنی و مستقیم با تیم مدیریت صحبت کنی.</p>
+          <div class="faq-highlight">
+            <p>سریع‌ترین راه اینه که همین‌جا تو سایت یه تیکت بفرستی — راحت‌تر و سریع‌تر از هر جای دیگه‌ست. یا اگه دوست داری، از لینک‌های زیر وارد دیسکورد سرور بشو؛ آیدی اونر هم همون‌جا موجوده.</p>
+            <a href="#ticket" class="btn btn-primary" style="margin-top:10px;">ارسال تیکت</a>
+          </div>
         </div></div>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="section reveal" id="ticket">
+  <div class="container">
+    <div class="section-head">
+      <h2>ارسال تیکت به پشتیبانی</h2>
+      <p>پیامت مستقیم برای تیم مدیریت XLAND ارسال می‌شه.</p>
+    </div>
+    <form id="ticket-form" class="ticket-card tilt-card">
+      <div class="field">
+        <label for="ticket-name">نام <span class="req">*</span></label>
+        <input type="text" id="ticket-name" required>
+      </div>
+      <div class="field">
+        <label for="ticket-email">ایمیل (اختیاری)</label>
+        <input type="email" id="ticket-email">
+      </div>
+      <div class="field">
+        <label for="ticket-phone">شماره موبایل (اختیاری)</label>
+        <input type="text" id="ticket-phone" inputmode="tel">
+      </div>
+      <div class="field">
+        <label for="ticket-message">پیام شما <span class="req">*</span></label>
+        <textarea id="ticket-message" required style="min-height:110px;"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">ارسال</button>
+      <p id="ticket-status" class="ticket-status"></p>
+    </form>
   </div>
 </section>
 
@@ -283,17 +316,7 @@
 <script src="effects.js"></script>
 <script src="main.js"></script>
 <script>
-  // Click anywhere on the IP box (not just the small button) to copy.
   document.addEventListener('DOMContentLoaded', () => {
-    const ipBox = document.getElementById('ip-click-target');
-    const copyBtn = document.getElementById('copy-ip-btn');
-    if (ipBox && copyBtn && typeof xlandCopyIp === 'function') {
-      ipBox.addEventListener('click', (e) => {
-        if (e.target === copyBtn) return; // avoid double-firing
-        xlandCopyIp();
-      });
-    }
-
     // FAQ accordion: opening one question closes the others.
     document.querySelectorAll('.faq-question').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -303,6 +326,48 @@
         if (!wasOpen) item.classList.add('open');
       });
     });
+
+    // Ticket form: confirm before sending, then save to Firebase
+    // under "tickets" (each entry gets its own auto-generated id).
+    const ticketForm = document.getElementById('ticket-form');
+    if (ticketForm) {
+      ticketForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const status = document.getElementById('ticket-status');
+        const name = document.getElementById('ticket-name').value.trim();
+        const email = document.getElementById('ticket-email').value.trim();
+        const phone = document.getElementById('ticket-phone').value.trim();
+        const message = document.getElementById('ticket-message').value.trim();
+
+        if (!name || !message) {
+          status.textContent = 'نام و متن پیام الزامی است.';
+          status.className = 'ticket-status err';
+          return;
+        }
+
+        const sure = confirm('آیا مطمئنید می‌خواهید این پیام ارسال شود؟');
+        if (!sure) return;
+
+        if (typeof database === 'undefined') {
+          status.textContent = 'اتصال به سرور برقرار نیست، بعداً دوباره امتحان کن.';
+          status.className = 'ticket-status err';
+          return;
+        }
+
+        database.ref('tickets').push({
+          name, email, phone, message,
+          time: Date.now(),
+          seen: false
+        }).then(() => {
+          status.textContent = 'پیامت با موفقیت ارسال شد ✓';
+          status.className = 'ticket-status ok';
+          ticketForm.reset();
+        }).catch(() => {
+          status.textContent = 'خطا در ارسال؛ دوباره امتحان کن.';
+          status.className = 'ticket-status err';
+        });
+      });
+    }
   });
 </script>
 </body>

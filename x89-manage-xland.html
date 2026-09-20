@@ -52,6 +52,7 @@
     <button class="tab-btn" data-tab="server">سرور و شبکه‌های اجتماعی</button>
     <button class="tab-btn" data-tab="content">محتوای متنی سایت</button>
     <button class="tab-btn" data-tab="security">امنیت پنل</button>
+    <button class="tab-btn" data-tab="tickets">پیام‌های تیکت</button>
   </div>
 
   <!-- Products tab -->
@@ -315,6 +316,31 @@
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top:10px;">به‌روزرسانی اطلاعات ورود</button>
       </form>
+    </div>
+  </div>
+
+  <!-- Tickets tab -->
+  <div class="tab-panel" id="tab-tickets">
+    <div class="admin-card">
+      <h3>پیام‌های تیکت</h3>
+      <p style="color:var(--text-faint); font-size:13px; margin-top:-8px;">
+        این پیام‌ها مستقیم از فرم «ارسال تیکت» در صفحه اصلی می‌آیند. برای پاسخ، از ایمیل یا شماره‌ای که کاربر گذاشته استفاده کن.
+      </p>
+      <table class="admin-table" id="ticket-table">
+        <thead>
+          <tr>
+            <th>نام</th>
+            <th>ایمیل / موبایل</th>
+            <th>پیام</th>
+            <th>زمان</th>
+            <th>عملیات</th>
+          </tr>
+        </thead>
+        <tbody id="ticket-table-body"></tbody>
+      </table>
+      <p id="no-tickets-msg" style="display:none; color:var(--text-faint); font-size:14px; margin-top:14px;">
+        هنوز تیکتی ارسال نشده است.
+      </p>
     </div>
   </div>
 </div>
