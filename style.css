@@ -359,6 +359,35 @@ img { max-width: 100%; }
   .nav-auth-label { display: none; }
 }
 
+/* My Tickets modal list */
+.my-ticket-item {
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  background: var(--glass-bg);
+}
+.my-ticket-item:last-child { margin-bottom: 0; }
+.my-ticket-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+.my-ticket-status { font-weight: 600; }
+.my-ticket-status.open { color: var(--cyan); }
+.my-ticket-status.closed { color: var(--text-faint); }
+.my-ticket-message { color: var(--text); font-size: 14px; margin: 0 0 8px; line-height: 1.7; }
+.my-ticket-reply {
+  color: var(--sand-1);
+  font-size: 13px;
+  margin: 0;
+  padding-inline-start: 10px;
+  border-inline-start: 2px solid var(--amber-dim);
+  line-height: 1.7;
+}
+
 .social-icon-btn {
   width: 32px;
   height: 32px;

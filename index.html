@@ -87,6 +87,15 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="my-tickets-modal">
+  <div class="modal-card tilt-card" style="max-width:480px;">
+    <button type="button" class="modal-close" id="my-tickets-close">×</button>
+    <h3 style="font-family:var(--font-display); font-size:19px; margin:0 0 18px;">تیکت‌های من</h3>
+    <div id="my-tickets-list"></div>
+    <p id="my-tickets-empty" style="display:none; color:var(--text-faint); font-size:13.5px;">هنوز تیکتی نفرستادی.</p>
+  </div>
+</div>
+
 <header class="hero">
   <div class="container hero-grid">
     <div>
@@ -247,7 +256,13 @@
       <h2>ارسال تیکت به پشتیبانی</h2>
       <p>پیامت مستقیم برای تیم مدیریت XLAND ارسال می‌شه.</p>
     </div>
-    <form id="ticket-form" class="ticket-card tilt-card">
+
+    <div id="ticket-login-notice" class="ticket-card tilt-card" style="text-align:center; display:none;">
+      <p style="color:var(--text-dim); margin:0 0 16px;">برای ارسال تیکت، اول باید وارد حساب کاربری‌ات بشی.</p>
+      <button type="button" class="btn btn-primary" id="ticket-open-auth-btn">ورود / ثبت‌نام</button>
+    </div>
+
+    <form id="ticket-form" class="ticket-card tilt-card" style="display:none;">
       <div class="field">
         <label for="ticket-name">نام <span class="req">*</span></label>
         <input type="text" id="ticket-name" required>
@@ -373,9 +388,30 @@
       });
     });
 
-    // Ticket form: confirm before sending, then save to Firebase
-    // under "tickets" (each entry gets its own auto-generated id).
+    // Ticket form: only usable when logged in. Toggle between the
+    // "please log in" notice and the actual form based on auth state,
+    // and route the notice's button into the login/register modal.
     const ticketForm = document.getElementById('ticket-form');
+    const ticketLoginNotice = document.getElementById('ticket-login-notice');
+    const ticketOpenAuthBtn = document.getElementById('ticket-open-auth-btn');
+
+    if (ticketOpenAuthBtn) {
+      ticketOpenAuthBtn.addEventListener('click', () => {
+        const openBtn = document.getElementById('auth-open-btn');
+        if (openBtn) openBtn.click();
+      });
+    }
+
+    if (typeof auth !== 'undefined' && ticketForm && ticketLoginNotice) {
+      auth.onAuthStateChanged((user) => {
+        ticketForm.style.display = user ? 'block' : 'none';
+        ticketLoginNotice.style.display = user ? 'none' : 'block';
+      });
+    }
+
+    // Ticket form: confirm before sending, then save to Firebase
+    // under tickets/{uid}/{auto-id} — nested by the sender's UID so
+    // the security rules can cleanly scope read/write per user.
     if (ticketForm) {
       ticketForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -391,6 +427,12 @@
           return;
         }
 
+        if (typeof auth === 'undefined' || !auth.currentUser) {
+          status.textContent = 'اول باید وارد حساب کاربری‌ات بشی.';
+          status.className = 'ticket-status err';
+          return;
+        }
+
         const sure = confirm('آیا مطمئنید می‌خواهید این پیام ارسال شود؟');
         if (!sure) return;
 
@@ -400,10 +442,11 @@
           return;
         }
 
-        database.ref('tickets').push({
-          name, email, phone, message,
+        const uid = auth.currentUser.uid;
+        database.ref('tickets/' + uid).push({
+          uid, name, email, phone, message,
           time: Date.now(),
-          seen: false
+          status: 'open'
         }).then(() => {
           status.textContent = 'پیامت با موفقیت ارسال شد ✓';
           status.className = 'ticket-status ok';

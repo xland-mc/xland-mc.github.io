@@ -321,7 +321,10 @@ function xlandInitSecurityForm() {
   });
 }
 
-/* ---------- Tickets (from the public site's ticket form) ---------- */
+/* ---------- Tickets (from the public site's ticket form) ----------
+   Stored as tickets/{senderUid}/{ticketId} so the Firebase Rules can
+   scope each visitor to their own branch while the admin reads the
+   whole "tickets" node at once. */
 let xlandTicketsBound = false;
 
 function xlandFormatTicketTime(ms) {
@@ -339,7 +342,15 @@ function xlandRenderTickets(ticketsObj) {
   if (!tbody) return;
   tbody.innerHTML = '';
 
-  const entries = Object.entries(ticketsObj || {}).sort((a, b) => (b[1].time || 0) - (a[1].time || 0));
+  // Flatten tickets/{uid}/{ticketId} into a single list, keeping the
+  // full path (uid + ticketId) so actions can address the right node.
+  const entries = [];
+  Object.entries(ticketsObj || {}).forEach(([uid, userTickets]) => {
+    Object.entries(userTickets || {}).forEach(([ticketId, t]) => {
+      entries.push({ uid, ticketId, ...t });
+    });
+  });
+  entries.sort((a, b) => (b.time || 0) - (a.time || 0));
 
   if (entries.length === 0) {
     emptyMsg.style.display = 'block';
@@ -347,11 +358,18 @@ function xlandRenderTickets(ticketsObj) {
   }
   emptyMsg.style.display = 'none';
 
-  entries.forEach(([key, t]) => {
+  entries.forEach((t) => {
+    const path = 'tickets/' + t.uid + '/' + t.ticketId;
+    const isOpen = t.status !== 'closed';
     const tr = document.createElement('tr');
 
     const nameTd = document.createElement('td');
-    nameTd.textContent = t.name || '—';
+    nameTd.innerHTML = '';
+    const statusDot = document.createElement('span');
+    statusDot.title = isOpen ? 'باز' : 'بسته‌شده';
+    statusDot.style.cssText = 'display:inline-block; width:8px; height:8px; border-radius:50%; margin-inline-end:6px; background:' + (isOpen ? 'var(--cyan)' : 'var(--text-faint)') + ';';
+    nameTd.appendChild(statusDot);
+    nameTd.appendChild(document.createTextNode(t.name || '—'));
 
     const contactTd = document.createElement('td');
     contactTd.style.fontSize = '13px';
@@ -359,9 +377,37 @@ function xlandRenderTickets(ticketsObj) {
     contactTd.textContent = [t.email, t.phone].filter(Boolean).join(' · ') || '—';
 
     const msgTd = document.createElement('td');
-    msgTd.textContent = t.message || '';
-    msgTd.style.maxWidth = '320px';
+    msgTd.style.maxWidth = '260px';
     msgTd.style.color = 'var(--text-dim)';
+
+    const msgP = document.createElement('div');
+    msgP.textContent = t.message || '';
+    msgTd.appendChild(msgP);
+
+    if (t.reply) {
+      const replyBox = document.createElement('div');
+      replyBox.style.cssText = 'margin-top:6px; padding:6px 8px; border-inline-start:2px solid var(--amber-dim); color:var(--text-faint); font-size:12.5px;';
+      replyBox.textContent = 'پاسخ: ' + t.reply;
+      msgTd.appendChild(replyBox);
+    }
+
+    const replyRow = document.createElement('div');
+    replyRow.style.cssText = 'display:flex; gap:6px; margin-top:8px;';
+    const replyInput = document.createElement('input');
+    replyInput.type = 'text';
+    replyInput.placeholder = 'نوشتن پاسخ...';
+    replyInput.value = t.reply || '';
+    replyInput.style.cssText = 'flex:1; background:var(--bg-0); border:1px solid var(--line); border-radius:var(--radius); padding:6px 8px; color:var(--text); font-size:12.5px;';
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'icon-btn';
+    replyBtn.textContent = 'ارسال پاسخ';
+    replyBtn.addEventListener('click', () => {
+      const val = replyInput.value.trim();
+      database.ref(path + '/reply').set(val).then(() => xlandToast('پاسخ ذخیره شد.'));
+    });
+    replyRow.appendChild(replyInput);
+    replyRow.appendChild(replyBtn);
+    msgTd.appendChild(replyRow);
 
     const timeTd = document.createElement('td');
     timeTd.style.fontSize = '12.5px';
@@ -369,16 +415,29 @@ function xlandRenderTickets(ticketsObj) {
     timeTd.textContent = xlandFormatTicketTime(t.time);
 
     const actionsTd = document.createElement('td');
+    const actions = document.createElement('div');
+    actions.className = 'row-actions';
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'icon-btn';
+    toggleBtn.textContent = isOpen ? 'بستن تیکت' : 'بازکردن';
+    toggleBtn.addEventListener('click', () => {
+      database.ref(path + '/status').set(isOpen ? 'closed' : 'open');
+    });
+
     const delBtn = document.createElement('button');
     delBtn.className = 'icon-btn danger';
     delBtn.textContent = 'حذف';
     delBtn.addEventListener('click', () => {
-      if (confirm('این تیکت حذف شود؟')) {
-        database.ref('tickets/' + key).remove();
+      if (confirm('این تیکت کاملاً و برای همیشه حذف شود؟')) {
+        database.ref(path).remove();
         xlandToast('تیکت حذف شد.');
       }
     });
-    actionsTd.appendChild(delBtn);
+
+    actions.appendChild(toggleBtn);
+    actions.appendChild(delBtn);
+    actionsTd.appendChild(actions);
 
     tr.appendChild(nameTd);
     tr.appendChild(contactTd);
@@ -395,6 +454,16 @@ function xlandInitTicketsListener() {
   database.ref('tickets').on('value', (snapshot) => {
     xlandRenderTickets(snapshot.val());
   });
+
+  const clearAllBtn = document.getElementById('tickets-clear-all-btn');
+  if (clearAllBtn) {
+    clearAllBtn.addEventListener('click', () => {
+      if (confirm('همه تیکت‌ها برای همیشه پاک شوند؟ این کار برگشت‌پذیر نیست.')) {
+        database.ref('tickets').remove();
+        xlandToast('همه تیکت‌ها پاک شدند.');
+      }
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

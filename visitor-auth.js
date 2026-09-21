@@ -48,12 +48,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const label = document.createElement('span');
     label.className = 'nav-auth-label';
     label.textContent = profileName || user.email;
+    const ticketsBtn = document.createElement('button');
+    ticketsBtn.className = 'btn btn-outline nav-auth-btn';
+    ticketsBtn.textContent = 'تیکت‌های من';
+    ticketsBtn.addEventListener('click', () => openMyTickets(user.uid));
     const logoutBtn = document.createElement('button');
     logoutBtn.className = 'btn btn-outline nav-auth-btn';
     logoutBtn.textContent = 'خروج';
     logoutBtn.addEventListener('click', () => auth.signOut());
     navAuth.appendChild(label);
+    navAuth.appendChild(ticketsBtn);
     navAuth.appendChild(logoutBtn);
+  }
+
+  function xlandFormatTicketTime(ms) {
+    if (!ms) return '';
+    try { return new Date(ms).toLocaleString('fa-IR'); } catch (e) { return ''; }
+  }
+
+  function openMyTickets(uid) {
+    const modal = document.getElementById('my-tickets-modal');
+    const list = document.getElementById('my-tickets-list');
+    const empty = document.getElementById('my-tickets-empty');
+    if (!modal || !list || typeof database === 'undefined') return;
+
+    modal.style.display = 'flex';
+    list.innerHTML = '<p style="color:var(--text-faint); font-size:13.5px;">در حال بارگذاری...</p>';
+
+    database.ref('tickets/' + uid).once('value').then(snap => {
+      const val = snap.val() || {};
+      const entries = Object.values(val).sort((a, b) => (b.time || 0) - (a.time || 0));
+      list.innerHTML = '';
+      if (entries.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      entries.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'my-ticket-item';
+        const isOpen = t.status !== 'closed';
+        item.innerHTML =
+          '<div class="my-ticket-meta"><span class="my-ticket-status ' + (isOpen ? 'open' : 'closed') + '">' +
+          (isOpen ? 'باز' : 'بسته‌شده') + '</span><span>' + xlandFormatTicketTime(t.time) + '</span></div>';
+        const msgP = document.createElement('p');
+        msgP.className = 'my-ticket-message';
+        msgP.textContent = t.message || '';
+        item.appendChild(msgP);
+        if (t.reply) {
+          const replyP = document.createElement('p');
+          replyP.className = 'my-ticket-reply';
+          replyP.textContent = 'پاسخ پشتیبانی: ' + t.reply;
+          item.appendChild(replyP);
+        }
+        list.appendChild(item);
+      });
+    });
+  }
+
+  const myTicketsClose = document.getElementById('my-tickets-close');
+  const myTicketsModal = document.getElementById('my-tickets-modal');
+  if (myTicketsClose && myTicketsModal) {
+    myTicketsClose.addEventListener('click', () => { myTicketsModal.style.display = 'none'; });
+    myTicketsModal.addEventListener('click', (e) => { if (e.target === myTicketsModal) myTicketsModal.style.display = 'none'; });
   }
 
   if (loginForm) {
