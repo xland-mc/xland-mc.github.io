@@ -39,8 +39,53 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.7v6.6l6-3.3-6-3.3z" fill="currentColor" stroke="none"/></svg>
       </a>
     </div>
+    <div class="nav-auth" id="nav-auth"></div>
   </div>
 </nav>
+
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-card tilt-card">
+    <button type="button" class="modal-close" id="auth-modal-close">×</button>
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab-btn active" data-auth-tab="login">ورود</button>
+      <button type="button" class="auth-tab-btn" data-auth-tab="register">ثبت‌نام</button>
+    </div>
+
+    <form id="auth-login-form" class="auth-form active">
+      <div class="field">
+        <label for="auth-login-email">ایمیل</label>
+        <input type="email" id="auth-login-email" required>
+      </div>
+      <div class="field">
+        <label for="auth-login-password">رمز عبور</label>
+        <input type="password" id="auth-login-password" required>
+      </div>
+      <div id="auth-login-error" class="form-error"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">ورود</button>
+    </form>
+
+    <form id="auth-register-form" class="auth-form">
+      <div class="field">
+        <label for="auth-reg-name">نام <span class="req">*</span></label>
+        <input type="text" id="auth-reg-name" required>
+      </div>
+      <div class="field">
+        <label for="auth-reg-phone">شماره موبایل <span class="req">*</span></label>
+        <input type="text" id="auth-reg-phone" inputmode="tel" required>
+      </div>
+      <div class="field">
+        <label for="auth-reg-email">ایمیل <span class="req">*</span></label>
+        <input type="email" id="auth-reg-email" required>
+      </div>
+      <div class="field">
+        <label for="auth-reg-password">رمز عبور <span class="req">*</span></label>
+        <input type="password" id="auth-reg-password" required>
+      </div>
+      <div id="auth-register-error" class="form-error"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">ثبت‌نام</button>
+    </form>
+  </div>
+</div>
 
 <header class="hero">
   <div class="container hero-grid">
@@ -313,6 +358,7 @@
 </script>
 <script src="data.js"></script>
 <script src="common.js"></script>
+<script src="visitor-auth.js"></script>
 <script src="effects.js"></script>
 <script src="main.js"></script>
 <script>

@@ -407,10 +407,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Firebase drives the login gate: fires once immediately with the
   // persisted session (or null), then again on every sign-in/sign-out.
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      xlandShowPanel(user);
-    } else {
+  // IMPORTANT: being signed in is not enough — since visitors can now
+  // also register/log in on the public site (same Firebase project),
+  // we additionally check the "admins" allow-list in the database.
+  // Only UIDs manually added there (via Firebase Console, never from
+  // client code) are let into the panel.
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+      xlandShowLogin();
+      return;
+    }
+    try {
+      const snap = await database.ref('admins/' + user.uid).once('value');
+      if (snap.val() === true) {
+        xlandShowPanel(user);
+      } else {
+        await auth.signOut();
+        xlandShowLogin();
+        const errorBox = document.getElementById('login-error');
+        if (errorBox) {
+          errorBox.textContent = 'این حساب دسترسی مدیریت ندارد.';
+          errorBox.classList.add('show');
+        }
+      }
+    } catch (e) {
+      await auth.signOut();
       xlandShowLogin();
     }
   });
